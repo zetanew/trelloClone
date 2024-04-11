@@ -8,7 +8,7 @@ function Card({ card }) {
   const [editedCardName, setEditedCardName] = useState(card.card_name); // State to store edited card name
 
   const handleDelete = () => {
-    dispatch(removeCard({ list_id: card.list_id, card_id: card.card_id })); // Dispatch removeCard action with list_id and card_id
+    dispatch(removeCard({card_id: card.card_id })); // Dispatch removeCard action with list_id and card_id
   };
 
   const handleModify = () => {

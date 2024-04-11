@@ -23,10 +23,13 @@ const boardSlice = createSlice({
       }
     },
     removeCard: (state, action) => {
-      const { list_id, card_id } = action.payload;
-      const list = state.find(list => list.list_id === list_id);
-      if (list) {
-        list.cards = list.cards.filter(card => card.card_id !== card_id);
+      const { card_id } = action.payload;
+      for (const list of state) {
+        const cardIndex = list.cards.findIndex(card => card.card_id === card_id);
+        if (cardIndex !== -1) {
+          list.cards.splice(cardIndex, 1);
+          break;
+        }
       }
     },
     modifyCard: (state, action) => {
