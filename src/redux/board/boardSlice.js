@@ -15,6 +15,13 @@ const boardSlice = createSlice({
     removeList: (state, action) => {
       return state.filter(list => list.list_id !== action.payload.list_id);
     },
+    modifyList: (state, action) => {
+        const { list_id, updatedList } = action.payload;
+        const listIndex = state.findIndex(list => list.list_id === list_id);
+        if (listIndex !== -1) {
+          state[listIndex].list_name = updatedList.list_name;
+        }
+      },
     addCard: (state, action) => {
       const { list_id, card } = action.payload;
       const list = state.find(list => list.list_id === list_id);
@@ -23,23 +30,19 @@ const boardSlice = createSlice({
       }
     },
     removeCard: (state, action) => {
-      const { card_id } = action.payload;
-      for (const list of state) {
-        const cardIndex = list.cards.findIndex(card => card.card_id === card_id);
-        if (cardIndex !== -1) {
-          list.cards.splice(cardIndex, 1);
-          break;
-        }
+      const { list_id, card_id } = action.payload;
+      const list = state.find(list => list.list_id === list_id);
+      if (list) {
+        list.cards = list.cards.filter(card => card.card_id !== card_id);
       }
     },
     modifyCard: (state, action) => {
-      const { card_id, updatedCard } = action.payload;
-      for (const list of state) {
+      const { list_id, card_id, updatedCard } = action.payload;
+      const list = state.find(list => list.list_id === list_id);
+      if (list) {
         const card = list.cards.find(card => card.card_id === card_id);
         if (card) {
-          card.card_name = updatedCard.card_name;
-          // Optionally, update other properties of the card if needed
-          break;
+          Object.assign(card, updatedCard);
         }
       }
     },
@@ -50,6 +53,7 @@ export const {
   setLists,
   addList,
   removeList,
+  modifyList,
   addCard,
   removeCard,
   modifyCard
