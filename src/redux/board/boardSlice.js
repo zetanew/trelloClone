@@ -30,12 +30,14 @@ const boardSlice = createSlice({
       }
     },
     modifyCard: (state, action) => {
-      const { list_id, card_id, updatedCard } = action.payload;
-      const list = state.find(list => list.list_id === list_id);
-      if (list) {
-        list.cards = list.cards.map(card =>
-          card.card_id === card_id ? { ...card, ...updatedCard } : card
-        );
+      const { card_id, updatedCard } = action.payload;
+      for (const list of state) {
+        const card = list.cards.find(card => card.card_id === card_id);
+        if (card) {
+          card.card_name = updatedCard.card_name;
+          // Optionally, update other properties of the card if needed
+          break;
+        }
       }
     },
   },
