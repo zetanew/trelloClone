@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Card from './Card'; // Import the Card component
-
+import NewCard from './NewCard'; 
 function Board() {
   const board = useSelector(state => state.board);
 
@@ -13,6 +13,7 @@ function Board() {
           {list.cards.map((card) => (
             <Card key={card.card_id} card={card} /> // Pass the card as props to Card component
           ))}
+           <NewCard listId={list.list_id} /> 
         </div>
       ))}
     </div>
