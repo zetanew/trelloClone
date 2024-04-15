@@ -30,9 +30,8 @@ const boardSlice = createSlice({
       }
     },
     removeCard: (state, action) => {
-      const { list_id, card_id } = action.payload;
-      const list = state.find(list => list.list_id === list_id);
-      if (list) {
+      const { card_id } = action.payload;
+      for (const list of state) {
         list.cards = list.cards.filter(card => card.card_id !== card_id);
       }
     },
