@@ -2,3 +2,4 @@ loglama sistemi en son eklenecek
 modal
 comments
 add list ! 
+move toaster conf. to new file 

@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import Board from './components/Board';
 import { setLists } from './redux/board/boardSlice'; // Import setLists action
 import { board as initialBoard } from './fakeData/data'; // Import fake data
-import { ToastContainer } from 'react-toastify';
 function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -38,7 +37,7 @@ function App() {
     </div>
       </nav>
       <Board />
-      <ToastContainer />
+     
     </>
   );
 }

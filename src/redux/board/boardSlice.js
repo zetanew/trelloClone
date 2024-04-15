@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const initialState = [];
 
@@ -11,7 +13,7 @@ const boardSlice = createSlice({
     },
     addList: (state, action) => {
       const newList = action.payload;
-      newList.cards = []; // Add an empty cards array
+      newList.cards = [];
       state.push(newList);
     },
     removeList: (state, action) => {
@@ -28,7 +30,10 @@ const boardSlice = createSlice({
       const { list_id, card } = action.payload;
       const list = state.find(list => list.list_id === list_id);
       if (list) {
-        list.cards.push({ ...card, logs: [{ log_id: "generated_log_id", message: `${card.card_name} created` }] }); // Add card with log
+        const logs = [{ log_id: "generated_log_id", message: `${card.card_name} created` }];
+        list.cards.push({ ...card, logs });
+        // Show all logs for the added card
+        logs.forEach(log => toast.success(log.message));
       }
     },
     removeCard: (state, action) => {
@@ -36,23 +41,29 @@ const boardSlice = createSlice({
       for (const list of state) {
         list.cards = list.cards.filter(card => {
           if (card.card_id === card_id) {
-            card.logs.push({ log_id: "generated_log_id", message: `${card.card_name} removed` }); // Add log for card removal
+            card.logs.forEach(log => toast.success(log.message));
+            return false; // Remove the card
           }
-          return card.card_id !== card_id;
+          return true; // Keep other cards
         });
       }
     },
     modifyCard: (state, action) => {
-      const { list_id, card_id, updatedCard } = action.payload;
-      const list = state.find(list => list.list_id === list_id);
-      if (list) {
-        const card = list.cards.find(card => card.card_id === card_id);
-        if (card) {
-          Object.assign(card, updatedCard);
-          card.logs.push({ log_id: "generated_log_id", message: `${card.card_name} modified` }); // Add log for card modification
-        }
+      const { card_id, updatedCard } = action.payload;
+      const foundCard = state.flatMap(list => list.cards).find(card => card.card_id === card_id);
+      if (foundCard) {
+        const { card_name, logs } = foundCard;
+        Object.assign(foundCard, updatedCard);
+        const now = new Date().toISOString();
+        const newLog = { log_id: "generated_log_id", message: `${card_name} modified at ${now}` };
+        foundCard.logs.unshift(newLog);
+        const toastMessage = `Modified at ${now}\n${logs.map(log => `Created at ${log.message.split(" ")[2]}`).join('\n')}`;
+        toast.success(toastMessage);
       }
     },
+    
+    
+    
   },
 });
 
