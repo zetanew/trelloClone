@@ -10,8 +10,12 @@ const boardSlice = createSlice({
       return action.payload;
     },
     addList: (state, action) => {
-      state.push(action.payload);
+      const newList = action.payload;
+      newList.cards = []; // Add an empty cards array
+      state.push(newList);
     },
+    
+    
     removeList: (state, action) => {
       return state.filter(list => list.list_id !== action.payload.list_id);
     },

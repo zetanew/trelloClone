@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeList, modifyList } from '../redux/board/boardSlice'; // Import the removeList and modifyList actions
-import Card from './Card'; // Import the Card component
+import { removeList, modifyList } from '../redux/board/boardSlice';
+import Card from './Card';
 import NewCard from './NewCard';
+import NewList from './NewList';
 
 function Board() {
   const dispatch = useDispatch();
@@ -12,8 +13,6 @@ function Board() {
 
   const handleModifyList = (listId) => {
     dispatch(modifyList({ list_id: listId, updatedList: { list_name: editedListName } }));
-
-
     setEditedListName('');
     setEditingListId('');
   };
@@ -37,10 +36,10 @@ function Board() {
                 type="text"
                 value={editedListName}
                 onChange={(e) => setEditedListName(e.target.value)}
-                className="border border-gray-300 rounded p-1 mr-2 w-20" // Adjust the width of the input field
+                className="border border-gray-300 rounded p-1 mr-2 w-20" // shorter width
               />
             ) : (
-              <h1 className="text-3xl font-bold">{list.list_name}</h1>
+              <h1 className="text-3xl font-bold px-4 py-2">{list.list_name}</h1>
             )}
             <div>
               {editingListId === list.list_id ? (
@@ -55,11 +54,14 @@ function Board() {
             </div>
           </div>
           {list.cards.map((card) => (
-            <Card key={card.card_id} card={card} /> // Pass the card as props to Card component
+            <Card key={card.card_id} card={card} />
           ))}
           <NewCard listId={list.list_id} />
         </div>
       ))}
+      <div>
+        <NewList />
+      </div>
     </div>
   );
 }
