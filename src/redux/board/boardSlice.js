@@ -14,29 +14,32 @@ const boardSlice = createSlice({
       newList.cards = []; // Add an empty cards array
       state.push(newList);
     },
-    
-    
     removeList: (state, action) => {
       return state.filter(list => list.list_id !== action.payload.list_id);
     },
     modifyList: (state, action) => {
-        const { list_id, updatedList } = action.payload;
-        const listIndex = state.findIndex(list => list.list_id === list_id);
-        if (listIndex !== -1) {
-          state[listIndex].list_name = updatedList.list_name;
-        }
-      },
+      const { list_id, updatedList } = action.payload;
+      const listIndex = state.findIndex(list => list.list_id === list_id);
+      if (listIndex !== -1) {
+        state[listIndex].list_name = updatedList.list_name;
+      }
+    },
     addCard: (state, action) => {
       const { list_id, card } = action.payload;
       const list = state.find(list => list.list_id === list_id);
       if (list) {
-        list.cards.push(card);
+        list.cards.push({ ...card, logs: [{ log_id: "generated_log_id", message: `${card.card_name} created` }] }); // Add card with log
       }
     },
     removeCard: (state, action) => {
       const { card_id } = action.payload;
       for (const list of state) {
-        list.cards = list.cards.filter(card => card.card_id !== card_id);
+        list.cards = list.cards.filter(card => {
+          if (card.card_id === card_id) {
+            card.logs.push({ log_id: "generated_log_id", message: `${card.card_name} removed` }); // Add log for card removal
+          }
+          return card.card_id !== card_id;
+        });
       }
     },
     modifyCard: (state, action) => {
@@ -46,6 +49,7 @@ const boardSlice = createSlice({
         const card = list.cards.find(card => card.card_id === card_id);
         if (card) {
           Object.assign(card, updatedCard);
+          card.logs.push({ log_id: "generated_log_id", message: `${card.card_name} modified` }); // Add log for card modification
         }
       }
     },
